@@ -1,0 +1,72 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>缓存队列</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">新版的缓存支持缓存队列功能，有时候我们可能不需要那么多缓存数据，而只是需要保留最近的一些缓存数据，或者因为缓存容量问题，我们需要限制缓存的队列数据长度，这就可以使用缓存队列功能来解决。<br />
+使用缓存队列很简单，只需要给当前缓存实例设置length参数即可，默认length参数为0，表示不启用缓存队列功能。下面的缓存队列的设置：<code class="prettyprint linenums lang-php">$Cache&nbsp;=&nbsp;Cache::getInstance('Xcache',array('expire'=&gt;'60','length'=&gt;10));</code>或者<code class="prettyprint linenums lang-php">$Cache&nbsp;=&nbsp;Cache::getInstance('Xcache',array('expire'=&gt;'60'));<br />
+$Cache-&gt;setOptions('length',10);&nbsp;//&nbsp;设置缓存队列长度为10<br />
+$Cache-&gt;setOptions('queue','xcache');&nbsp;//&nbsp;设置缓存队列方式为xcache</code></div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="136.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="138.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

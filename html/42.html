@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>URL生成</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">为了配合所使用的URL模式，我们需要能够动态的根据当前的URL设置生成对应的URL地址，为此，ThinkPHP内置提供了U方法，用于URL的动态生成，可以确保项目在移植过程中不受环境的影响。<br />
+U方法的定义规则如下（方括号内参数根据实际应用决定）：<code class="prettyprint linenums lang-php">U('[分组/模块/操作]?参数'&nbsp;[,'参数','伪静态后缀','是否跳转','显示域名'])</code>如果不定义项目和模块的话 就表示当前项目和模块名称，下面是一些简单的例子：<code class="prettyprint linenums lang-php">U('User/add')&nbsp;//&nbsp;生成User模块的add操作的URL地址<br />
+U('Blog/read?id=1')&nbsp;//&nbsp;生成Blog模块的read操作&nbsp;并且id为1的URL地址<br />
+U('Admin/User/select')&nbsp;//&nbsp;生成Admin分组的User模块的select操作的URL地址</code>U方法的第二个参数支持数组和字符串两种定义方式，如果只是字符串方式的参数可以在第一个参数中定义，例如：<code class="prettyprint linenums lang-php">U('Blog/cate',array('cate_id'=&gt;1,'status'=&gt;1))<br />
+U('Blog/cate','cate_id=1&status=1')<br />
+U('Blog/cate?cate_id=1&status=1')</code>三种方式是等效的，都是 生成Blog模块的cate操作 并且cate_id为1 status为1的URL地址<br />
+但是不允许使用下面的定义方式来传参数<code class="prettyprint linenums lang-php">U('Blog/cate/cate_id/1/status/1')</code>根据项目的不同URL设置，同样的U方法调用可以智能地对应产生不同的URL地址效果，例如针对<code class="prettyprint linenums lang-php">U（'Blog/read?id=1'）这个定义为例。</code>如果当前URL设置为普通模式的话，最后生成的URL地址是： <br />
+http://serverName/index.php?m=Blog&a=read&id=1<br />
+如果当前URL设置为PATHINFO模式的话，同样的方法最后生成的URL地址是： <br />
+http://serverName/index.php/Blog/read/id/1<br />
+如果当前URL设置为REWRITE模式的话，同样的方法最后生成的URL地址是： <br />
+http://serverName/Blog/read/id/1<br />
+如果当前URL设置为REWRITE模式，并且设置了伪静态后缀为.html的话，同样的方法最后生成的URL地址是： <br />
+http://serverName/Blog/read/id/1.html<br />
+U方法还可以支持路由，如果我们定义了一个路由规则为：<code class="prettyprint linenums lang-php">&nbsp;'news/:id\d'=&gt;'News/read'</code>那么可以使用<code class="prettyprint linenums lang-php">U（'/news/1'）</code>最终生成的URL地址是：<code class="prettyprint linenums lang-php">http://serverName/index.php/news/1</code><p class="tips">注意：如果你是在模板文件中直接使用U方法的话，需要采用 {:U('参数1', '参数2'…)} 的方式，具体参考模板引擎章节的8.3 使用函数内容。</p>如果你的应用涉及到多个子域名的操作地址，那么也可以在U方法里面指定需要生成地址的域名，例如：<code class="prettyprint linenums lang-php">U('Blog/read@blog.thinkphp.cn','id=1');</code>@后面传入需要指定的域名即可。<br />
+<br />
+此外，U方法的第5个参数如果设置为true，表示自动识别当前的域名，并且会自动根据子域名部署设置APP_SUB_DOMAIN_DEPLOY和APP_SUB_DOMAIN_RULES自动匹配生成当前地址的子域名。<br />
+如果开启了URL_CASE_INSENSITIVE，则会统一生成小写的URL地址。</div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="41.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="43.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

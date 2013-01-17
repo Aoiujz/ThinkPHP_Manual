@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>快捷缓存</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">为了进一步简化缓存存取操作，ThinkPHP把所有的缓存机制统一成一个S方法来进行操作，所以在使用不同的缓存方式的时候并不需要关注具体的缓存细节。（如果是3.1版本以上，建议用新增的cache方法替代S方法）例如： <code class="prettyprint linenums lang-php">//&nbsp;使用data标识缓存$Data数据<br />
+S('data',$Data);<br />
+//&nbsp;缓存$Data数据3600秒<br />
+S('data',$Data,3600);<br />
+//&nbsp;获取缓存数据<br />
+$Data&nbsp;=&nbsp;S('data');<br />
+//&nbsp;删除缓存数据<br />
+S('data',NULL);</code>系统默认的缓存方式是采用File方式缓存，我们可以在项目配置文件里面定义其他的缓存方式，例如，修改默认的缓存方式为Xcache（当然，你的环境需要支持Xcache） <code class="prettyprint linenums lang-php">'DATA_CACHE_TYPE'=&gt;'Xcache'</code>通过上面的定义，相同的代码就会使用Xcache方式来缓存了，而事实上，代码并没有任何改变。 <br />
+当然，我们还可以在S方法里面显式的指定缓存方式，例如 <code class="prettyprint linenums lang-php">S('data',$Data,3600,'File');</code>S方法还支持对当前的缓存方式传入缓存参数，例如：<code class="prettyprint linenums lang-php">S('data',$Data,3600,'File',array('length'=&gt;10,'temp'=&gt;RUNTIME_PATH.'temp/'));</code>对于File方式缓存下的缓存目录下面因为缓存数据过多而导致存在大量的文件问题，ThinkPHP也给出了解决方案，可以启用哈希子目录缓存的方式，只需要设置 <code class="prettyprint linenums lang-php">'DATA_CACHE_SUBDIR'=&gt;true</code>还可以设置哈希目录的层次，例如：<code class="prettyprint linenums lang-php">'DATA_PATH_LEVEL'=&gt;2</code>就可以根据缓存标识的哈希自动创建多层子目录来缓存。为了更加方便的操作缓存，3.1版本新增了cache函数用以设置和操作缓存。<br />
+使用方法：<br />
+<b>1 缓存初始化 </b><code class="prettyprint linenums lang-php">cache(array('type'=&gt;'xcache','expire'=&gt;60));</code><b>2 缓存设置</b> <code class="prettyprint linenums lang-php">cache('a',$value);</code><b>3 缓存读取</b> <code class="prettyprint linenums lang-php">$value&nbsp;=&nbsp;cache('a');</code><b>4 缓存删除</b> <code class="prettyprint linenums lang-php">cache('a',null);</code>需要使用不同的缓存方式的时候 需要重新初始化，如果不初始化直接调用的话，则会按照系统配置自动初始化。<br />
+初始化的返回值，可以直接操作缓存：<code class="prettyprint linenums lang-php">$cache&nbsp;=&nbsp;cache(array('type'=&gt;'xcache','expire'=&gt;60));<br />
+$cache-&gt;set('name',$value);<br />
+$cache-&gt;get('name');<br />
+$cache-&gt;rm('name');</code>或者<code class="prettyprint linenums lang-php">$cache&nbsp;=&nbsp;cache(array('type'=&gt;'xcache','expire'=&gt;60));<br />
+$cache-&gt;name&nbsp;=&nbsp;$value;<br />
+echo&nbsp;$cache-&gt;name;<br />
+unset($cache-&gt;name);</code></div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="137.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="139.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

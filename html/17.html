@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>部署目录</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">当我们实际部署网站的时候，目录结构往往由于项目的复杂而变得复杂。我们推荐的部署目录结构如下：<table border="0" cellspacing="1" cellpadding="0"><tr>  <th>目录/文件</th>  <th>说明</th></tr><tr>  <td>ThinkPHP</td>  <td>系统目录（下面的目录结构同上面的系统目录）</td></tr><tr>  <td>Public</td> <br />
+  <td>网站公共资源目录（存放网站的Css、Js和图片等资源）</td></tr><tr>  <td>Uploads</td>  <td>网站上传目录（用户上传的统一目录）</td></tr><tr>  <td>Home</td> <br />
+  <td>项目目录（下面的目录结构同上面的应用目录）</td></tr><tr>  <td>Admin</td>  <td>后台管理项目目录</td></tr><tr>  <td colspan="2">…… 更多的项目目录</td></tr><tr>  <td>index.php</td>  <td>项目Home的入口文件</td></tr><tr>  <td>admin.php</td>  <td>项目Admin的入口文件</td></tr><tr>  <td colspan="2">…… 更多的项目入口文件</td></tr></table>如果采用分组模块的话 可以简化为一个项目目录<table border="0" cellspacing="1" cellpadding="0"><tr>  <th>目录/文件</th>  <th>说明</th></tr><tr>  <td>ThinkPHP</td>  <td>系统目录（下面的目录结构同上面的系统目录）</td></tr><tr>  <td>App</td> <br />
+  <td>项目目录（分组目录结构会在后面描述）</td></tr><tr>  <td>Public</td> <br />
+  <td>网站公共资源目录（存放网站的Css、Js和图片等资源）</td></tr><tr>  <td>Uploads</td>  <td>网站上传目录（用户上传的统一目录）</td></tr><tr>  <td>index.php</td>  <td>网站的入口文件</td></tr></table>项目的模板文件还是放到项目的Tpl目录下面，只是将外部调用的资源文件， 包括图片 JS 和CSS统一放到网站的公共目录Public下面，分Images、Js和Css子目录存放，如果有可能的话，甚至也可以把这些资源文件单独放一个外部的服务器远程调用，并进行优化。<br />
+<p class="warning">事实上，系统目录和项目目录可以放到非WEB访问目录下面，网站目录下面只需要放置Public公共目录和入口文件，从而提高网站的安全性。</p></div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="16.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="18.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

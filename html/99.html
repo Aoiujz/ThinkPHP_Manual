@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>导入文件</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">传统方式的导入外部JS和CSS文件的方法是直接在模板文件使用：<code class="prettyprint linenums lang-php">&lt;script&nbsp;type='text/javascript'&nbsp;src='/Public/Js/Util/Array.js'&gt;<br />
+&lt;link&nbsp;rel="stylesheet"&nbsp;type="text/css"&nbsp;href="/App/Tpl/default/Public/css/style.css"&nbsp;/&gt;</code>系统提供了专门的标签来简化上面的导入：<br />
+第一个是import标签 ，导入方式采用类似ThinkPHP的import函数的命名空间方式，例如：<table border="0" cellspacing="1" cellpadding="0">  <tr>    <th>import标签（包含外部模板文件）</th>  </tr>  <tr>    <td>闭合</td>    <td>闭合标签</td>  </tr>  <tr>    <td>属性</td>    <td>file（必须）：要包含的模板文件，支持变量</td>  </tr></table>示例：<code class="prettyprint linenums lang-php">&lt;import&nbsp;type='js'&nbsp;file="Js.Util.Array"&nbsp;/&gt;</code>Type属性默认是js， 所以下面的效果是相同的：<code class="prettyprint linenums lang-php">&lt;import&nbsp;file="Js.Util.Array"&nbsp;/&gt;</code>还可以支持多个文件批量导入，例如：<code class="prettyprint linenums lang-php">&lt;import&nbsp;file="Js.Util.Array,Js.Util.Date"&nbsp;/&gt;</code>导入外部CSS文件必须指定type属性的值，例如：<code class="prettyprint linenums lang-php">&lt;import&nbsp;type='css'&nbsp;file="Css.common"&nbsp;/&gt;</code>上面的方式默认的import的起始路径是网站的Public目录，如果需要指定其他的目录，可以使用basepath属性，例如：<code class="prettyprint linenums lang-php">&lt;import&nbsp;file="Js.Util.Array"&nbsp;&nbsp;basepath="./Common"&nbsp;/&gt;</code>第二个是load标签，通过文件方式导入当前项目的公共JS或者CSS<table border="0" cellspacing="1" cellpadding="0">  <tr>    <th>load标签（采用url方式引入资源文件）</th>  </tr>  <tr>    <td>闭合</td>    <td>闭合标签</td>  </tr>  <tr>    <td>属性</td>    <td>href（必须）：要引入的资源文件url地址，支持变量</td>  </tr></table>例如： <code class="prettyprint linenums lang-php">&lt;load&nbsp;href="../Public/Js/Common.js"&nbsp;/&gt;<br />
+&lt;load&nbsp;href="../Public/Css/common.css"&nbsp;/&gt;</code>在href属性中可以使用特殊模板标签替换，例如：<br />
+&lt;load href="__PUBLIC__/Js/Common.js" /&gt;<br />
+Load标签可以无需指定type属性，系统会自动根据后缀自动判断。<br />
+系统还提供了两个标签别名js和css 用法和load一致，例如：<code class="prettyprint linenums lang-php">&lt;js&nbsp;href="__PUBLIC__/Js/Common.js"&nbsp;/&gt;<br />
+&lt;css&nbsp;href="../Public/Css/common.css"&nbsp;/&gt;</code></div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="98.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="100.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

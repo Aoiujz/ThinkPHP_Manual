@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>REST介绍</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">REST(Representational State Transfer表述性状态转移)是一种针对网络应用的设计和开发方式，可以降低开发的复杂性，提高系统的可伸缩性。REST提出了一些设计概念和准则：<br />
+1、网络上的所有事物都被抽象为资源（resource）；<br />
+2、每个资源对应一个唯一的资源标识（resource identifier）；<br />
+3、通过通用的连接器接口（generic connector interface）对资源进行操作；<br />
+4、对资源的各种操作不会改变资源标识；<br />
+5、所有的操作都是无状态的（stateless）。<br />
+需要注意的是，REST是设计风格而不是标准。REST通常基于使用HTTP，URI，和XML以及HTML这些现有的广泛流行的协议和标准。<br />
+传统的请求模式和REST模式的请求模式区别：<table border="0" cellspacing="1" cellpadding="0">    <tr>        <th>作用</th>        <th>传统模式</th>        <th>REST模式</th>    </tr>    <tr>        <td>列举出所有的用户</td>        <td>GET  /users/list</td>        <td>GET /users</td>    </tr>    <tr>        <td>列出ID为1的用户信息</td>        <td>GET /users/show/id/1</td>        <td>GET /users/1</td>    </tr>    <tr>        <td>插入一个新的用户</td>        <td>POST /users/add</td>        <td>POST /users</td>    </tr>    <tr>        <td>更新ID为1的用户信息</td>        <td>POST /users/mdy/id/1</td>        <td>PUT /users/1</td>    </tr>    <tr>        <td>删除ID为1的用户</td>        <td>POST /users/delete/id/1</td>        <td>DELETE /users/1</td>    </tr></table>关于更多的REST信息，可以参考：<a href="http://zh.wikipedia.org/wiki/REST" target="_blank">http://zh.wikipedia.org/wiki/REST</a></div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="179.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="181.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

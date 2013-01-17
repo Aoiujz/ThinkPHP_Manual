@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>URL大小写</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">我们知道，系统默认的规范是根据URL里面的moduleName和actionName来定位到具体的模块类，从而执行模块类的操作方法，如果在Linux环境下面，就会发生URL里面使用小写模块名不能找到模块类的情况，例如在Linux环境下面，我们访问下面的URL是正常的：<code class="prettyprint linenums lang-php">http://serverName/index.php/User/add</code>但是，如果使用<code class="prettyprint linenums lang-php">http://serverName/index.php/user/add</code>就会出现user模块不存在的错误。因为，我们定义的模块类是UserAction而不是userAction，但是后者显然不符合ThinkPHP的命名规范，这样的问题会造成用户体验的下降。<br />
+其实，系统本身已经提供了一个良好的解决方案，可以通过配置简单实现。<br />
+只要在项目配置中，增加：<code class="prettyprint linenums lang-php">'URL_CASE_INSENSITIVE'&nbsp;=&gt;true</code>就可以实现URL访问不再区分大小写了。<code class="prettyprint linenums lang-php">http://serverName/index.php/User/add<br />
+//将等效于<br />
+http://serverName/index.php/user/add</code>这里需要注意一个地方，如果我们定义了一个UserTypeAction的模块类，那么URL的访问应该是：<code class="prettyprint linenums lang-php">http://serverName/index.php/user_type/list<br />
+//而不是<br />
+http://serverName/index.php/usertype/list</code>利用系统提供的U方法可以为你自动生成相关的URL地址。<br />
+如果设置<code class="prettyprint linenums lang-php">'URL_CASE_INSENSITIVE'&nbsp;=&gt;false</code>的话，URL就又变成：<code class="prettyprint linenums lang-php">http://serverName/index.php/UserType/list</code>注意：URL不区分大小写并不会改变系统的命名规范，并且只有按照系统的命名规范后才能正确的实现URL不区分大小写。</div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="42.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="44.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

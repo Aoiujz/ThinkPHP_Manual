@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>合并字段缓存</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">默认情况下，字段缓存是自动生成的，在开发完成之后，基本上数据库的变动变得比较少，因此可以考虑合并字段缓存到对应的模型类，这样能够减少每次读取字段缓存的IO开销。<br />
+合并的方法是在Runtime/Data/_fields下面找到对应的字段缓存文件，例如，User模型的字段缓存文件中的内容可能是：<code class="prettyprint linenums lang-php">return&nbsp;array&nbsp;(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;=&gt;&nbsp;'id',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;=&gt;&nbsp;'create_time',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;=&gt;&nbsp;'update_time',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;=&gt;&nbsp;'status',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;4&nbsp;=&gt;&nbsp;'account',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;5&nbsp;=&gt;&nbsp;'password',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;=&gt;&nbsp;'nickname',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;=&gt;&nbsp;'email',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;8&nbsp;=&gt;&nbsp;'remark',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;9&nbsp;=&gt;&nbsp;'avatar',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;'_autoinc'&nbsp;=&gt;&nbsp;true,&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;'_pk'&nbsp;=&gt;&nbsp;'id',&nbsp;<br />
+);</code>把上面这段代码拷贝到UserModel类的开头，设置为fields属性即可：<br />
+ <code class="prettyprint linenums lang-php">protected&nbsp;$fields&nbsp;=&nbsp;&nbsp;array&nbsp;(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;0&nbsp;=&gt;&nbsp;'id',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;1&nbsp;=&gt;&nbsp;'create_time',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;=&gt;&nbsp;'update_time',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;3&nbsp;=&gt;&nbsp;'status',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;4&nbsp;=&gt;&nbsp;'account',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;5&nbsp;=&gt;&nbsp;'password',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;6&nbsp;=&gt;&nbsp;'nickname',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;7&nbsp;=&gt;&nbsp;'email',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;8&nbsp;=&gt;&nbsp;'remark',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;9&nbsp;=&gt;&nbsp;'avatar',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;10&nbsp;=&gt;&nbsp;'max_login',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;11&nbsp;=&gt;&nbsp;'login_count',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;12&nbsp;=&gt;&nbsp;'last_login_time',<br />
+&nbsp;&nbsp;&nbsp;&nbsp;13&nbsp;=&gt;&nbsp;'last_login_ip',&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;'_autoinc'&nbsp;=&gt;&nbsp;true,&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;'_pk'&nbsp;=&gt;&nbsp;'id',&nbsp;<br />
+);</code>3.1版本以后，字段缓存文件的格式采用JSON格式编码存在，所以不能直接拷贝，需要按照以上格式自己定义fields属性。<br />
+注意：如果在某个模型类中进行了多数据库切换操作，请不要合并。</div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="164.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="166.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

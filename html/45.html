@@ -1,0 +1,104 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>跨模块调用</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">在开发过程中经常会在当前模块调用其他模块的方法，这个时候就涉及到跨模块调用，我们还可以了解到A和R两个快捷方法的使用。<br />
+例如，我们在Index模块调用User模块的操作方法<code class="prettyprint linenums lang-php">class&nbsp;IndexAction&nbsp;extends&nbsp;Action{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;index(){<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//实例化UserAction<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$User&nbsp;=&nbsp;new&nbsp;UserAction();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//其他用户操作<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//...<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;display();&nbsp;//输出页面模板<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+}</code>因为系统会自动加载Action控制器，因此 我们不需要导入UserAction类就可以直接实例化。<br />
+并且为了方便跨模块调用，系统内置了A方法和R方法。<br />
+A方法表示实例化某个模块，例如，上面的方法可以改为：<code class="prettyprint linenums lang-php">class&nbsp;IndexAction&nbsp;extends&nbsp;Action{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;function&nbsp;index(){<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//实例化UserAction<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$User&nbsp;=&nbsp;A('User');<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//其他用户操作<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//...<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$this-&gt;display();&nbsp;//输出页面模板<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+}</code>事实上，A方法还支持跨分组或者跨项目调用，默认情况下是调用当前项目下面的模块。<br />
+跨项目调用的格式是：<br />
+<b>A('[项目名://][分组名/]模块名')</b><br />
+例如：<code class="prettyprint linenums lang-php">A('User')&nbsp;//表示调用当前项目的User模块<br />
+A('Admin://User')&nbsp;//表示调用Admin项目的User模块<br />
+A('Admin/User')&nbsp;//表示调用Admin分组的User模块<br />
+A('Admin://Tool/User')&nbsp;//表示调用Admin项目Tool分组的User模块</code>R方法表示调用一个模块的某个操作方法，调用格式是：<br />
+<b>R('[项目名://][分组名/]模块名/操作名',array('参数1','参数2'…))</b><br />
+例如：<code class="prettyprint linenums lang-php">R('User/info')&nbsp;//表示调用当前项目的User模块的info操作方法<br />
+R('Admin/User/info')&nbsp;//表示调用Admin分组的User模块的info操作方法<br />
+R('Admin://Tool/User/info')&nbsp;//表示调用Admin项目Tool分组的User模块的info操作方法</code>R方法还支持对调用的操作方法需要传入参数，例如User模块中我们定义了一个info方法：<code class="prettyprint linenums lang-php">class&nbsp;UserAction&nbsp;extends&nbsp;Action{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;protected&nbsp;function&nbsp;info($id){<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$User&nbsp;=&nbsp;M('User');<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$User-&gt;find($id);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//...<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+}</code>接下来，我们可以在其他模块中调用：<code class="prettyprint linenums lang-php">R('User/info',array(15))</code>表示调用当前项目的User模块的info操作方法，并且id参数传入15</div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="44.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="46.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>REST配置</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">Rest模式增加的REST相关配置参数如下：<table border="0" cellspacing="1" cellpadding="0">    <tr>        <th>配置名</th>        <th>说明</th>        <th>默认值</th>    </tr>    <tr>        <td>REST_METHOD_LIST</td>        <td>REST允许的请求类型列表</td>        <td>get,post,put,delete</td>    </tr>    <tr>        <td>REST_DEFAULT_METHOD</td>        <td>REST默认请求类型</td>        <td>get</td>    </tr>    <tr>        <td>REST_CONTENT_TYPE_LIST</td>        <td>REST允许请求的资源类型列表</td>        <td>html,xml,json,rss</td>    </tr>    <tr>        <td>REST_DEFAULT_TYPE</td>        <td>REST默认的资源类型</td>        <td>html</td>    </tr>    <tr>        <td>REST_OUTPUT_TYPE</td>        <td>REST允许输出的资源类型列表</td>        <td>array( <br /><br />
+    'xml' =&gt; 'application/xml', <br /><br />
+    'json' =&gt; 'application/json',<br /><br />
+    'html' =&gt; 'text/html',<br /><br />
+),</td>    </tr></table>这些参数的设置只是rest模式的默认配置，可以在项目配置文件中进行改变。</div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="181.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="183.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>

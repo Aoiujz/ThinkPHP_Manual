@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ThinkPHP3.1.2完全开发手册</title>
+	<link rel="stylesheet" href="../images/css/book.css">
+	<link rel="stylesheet" href="../images/css/prettify.css">
+	<link rel="stylesheet"  href="../images/css/jquery.mobile-1.2.0.min.css" />
+	<script type="text/javascript" src="../images/js/prettify.js"></script>
+	<script type="text/javascript" src="../images/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+		$(document).bind("mobileinit", function(){
+			$.mobile.defaultPageTransition = "slide";
+			$.mobile.loadingMessage = false;
+			$.mobile.buttonMarkup.hoverDelay = 300;
+		});
+	</script>
+	<script type="text/javascript" src="../images/js/jquery.mobile-1.2.0.min.js"></script>
+	<script type="text/javascript" src="cordova-2.2.0.js"></script>
+	<script type="text/javascript">
+		$(document).bind('pageinit', function(){
+			//表格隔行变色
+			$('table').TableColor();
+				
+			//代码高亮
+			prettyPrint();
+		})
+		
+		//表格隔行变色插件
+		$.fn.TableColor = function(){
+			return $(this).each(function(){
+				if(this.nodeName.toLowerCase() != 'table') return;
+				var self = $(this);
+				self.find('tr').each(function(index) {
+					var _this = $(this);
+					if(index % 2 == 0){
+						_this.addClass('add');
+					} else {
+						_this.addClass('even');	
+					}
+					_this.hover(
+						function(){_this.addClass('hover')},
+						function(){_this.removeClass('hover')}
+					);
+				});	
+			});
+		}
+	</script>
+</head>
+<body>
+<div data-role="page">
+	<div data-role="header" data-theme="a" data-position="fixed" data-id="header">
+		<a data-icon="home" data-iconpos="notext" href="../index.html">首页</a>
+		<h1>使用PHP代码</h1>
+		<a data-icon="search" data-iconpos="notext" href="../search.html">搜索</a>
+	</div>
+	<div data-role="content">
+		<div class="book-content">Php代码可以和标签在模板文件中混合使用，可以在模板文件里面书写任意的PHP语句代码 ，包括下面两种方式：<br />
+第一种是使用php标签：<table border="0" cellspacing="1" cellpadding="0">  <tr>    <th colspan="2">php标签（在模板中使用php代码）</th>  </tr>  <tr>    <td>闭合</td>    <td>非闭合标签</td>  </tr>  <tr>    <td>属性</td>    <td>无</td>  </tr></table>例如：<code class="prettyprint linenums lang-php">&lt;php&gt;echo&nbsp;'Hello,world!';&lt;/php&gt;</code>我们建议需要使用PHP代码的时候尽量采用php标签，因为原生的PHP语法可能会被配置禁用而导致解析错误。<br />
+第二种就是直接使用原始的php代码：<code class="prettyprint linenums lang-php">&lt;?php&nbsp;echo&nbsp;'Hello,world!';&nbsp;?&gt;</code>注意：php标签或者php代码里面就不能再使用标签（包括普通标签和XML标签）了，因此下面的几种方式都是无效的：<code class="prettyprint linenums lang-php">&lt;php&gt;&lt;eq&nbsp;name='name'value='value'&gt;value&lt;/eq&gt;&lt;/php&gt;</code>Php标签里面使用了eq标签，因此无效<code class="prettyprint linenums lang-php">&lt;php&gt;if(&nbsp;{$user}&nbsp;!=&nbsp;'ThinkPHP'&nbsp;)&nbsp;echo&nbsp;&nbsp;'ThinkPHP'&nbsp;;&lt;/php&gt;</code>Php标签里面使用了{$user}普通标签输出变量 ，因此无效。<code class="prettyprint linenums lang-php">&lt;php&gt;if(&nbsp;$user.name&nbsp;!=&nbsp;'ThinkPHP'&nbsp;)&nbsp;echo&nbsp;&nbsp;'ThinkPHP'&nbsp;;&lt;/php&gt;</code>Php标签里面使用了$user.name  点语法变量输出 ，因此无效。<br />
+简而言之，在PHP标签里面不能再使用PHP本身不支持的代码。<br />
+如果设置了TMPL_DENY_PHP参数为true，就不能在模板中使用原生的PHP代码，但是仍然支持PHP标签输出。</div>
+	</div>
+	<div data-role="footer" data-theme="a" data-position="fixed" data-id="footer">
+		<div data-role="controlgroup" data-type="horizontal">
+			<a href="113.html" data-role="button" data-icon="arrow-l" data-direction="reverse">上一页</a>
+			<a href="115.html" data-role="button" data-icon="arrow-r">下一页</a>
+		</div>
+	</div>
+</div>
+</body>
+</html>
